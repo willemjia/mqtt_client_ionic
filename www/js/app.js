@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','config','mqttws','ngCordova'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','config','ngCordova'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -22,24 +22,23 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','c
     }
 //=============================================================================================================
     //连接mqtt服务器
-    client = new Paho.MQTT.Client("10.25.18.42", 8080, "baosight");
+    client = new Paho.MQTT.Client("10.25.18.38", 8888, "baosight");
 
 // set callback handlers
     client.onConnectionLost = onConnectionLost;
     client.onMessageArrived = onMessageArrived;
 // connect the client
-    client.connect({onSuccess:onConnect});
+//    client.connect({userName:'admin',password:'admin',onSuccess:onConnect});
+    client.connect({userName:'admin',password:'admin',onSuccess:onConnect});
 // called when the client connects
     function onConnect() {
       // Once a connection has been made, make a subscription and send a message.
-      client.subscribe("mqtt/test");//订阅主题
-
+      client.subscribe("mqtt");//订阅主题
       //发布消息，可以开发另一个app或网页作为发布消息的客户端
       /* message = new Paho.MQTT.Message("Hello");
        message.destinationName = "mqtt/test";
        client.send(message);//发布消息*/
     }
-
 // called when the client loses its connection
     function onConnectionLost(responseObject) {
       if (responseObject.errorCode !== 0) {
@@ -48,12 +47,13 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','c
     }
 // called when a message arrives
     function onMessageArrived(message) {
-      cordova.plugins.notification.local.schedule({
+      alert(message.payloadString);
+     /* cordova.plugins.notification.local.schedule({
         id: 1,
         title: '新消息通知',
         text: message.payloadString,
         at: new Date(new Date().getTime())
-      });
+      });*/
     };
   //=======================================================================================================
   });
